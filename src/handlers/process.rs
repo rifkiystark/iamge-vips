@@ -2,9 +2,11 @@ use axum::{
     extract::Query,
     http::{HeaderMap, HeaderValue, StatusCode},
     response::IntoResponse,
+    Extension,
 };
+use libvips::VipsApp;
 use serde::Deserialize;
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::Arc};
 
 use crate::services::image;
 
@@ -18,7 +20,10 @@ pub struct ProcessParams {
     grayscale: Option<bool>,
 }
 
-pub async fn process_image(Query(params): Query<ProcessParams>) -> impl IntoResponse {
+pub async fn process_image(
+    Extension(app): Extension<Arc<VipsApp>>,
+    Query(params): Query<ProcessParams>,
+) -> impl IntoResponse {
     let mut options: HashMap<&str, String> = HashMap::new();
     options.insert("url", params.url.clone());
 
@@ -44,6 +49,9 @@ pub async fn process_image(Query(params): Query<ProcessParams>) -> impl IntoResp
             );
             (StatusCode::OK, headers, result.image).into_response()
         }
-        Err(err) => format!("Error processing image: {}", err).into_response(),
+        Err(err) => {
+            let app_err = app.error_buffer().unwrap();
+            format!("Error processing image: {} {}", app_err, err).into_response()
+        }
     }
 }
