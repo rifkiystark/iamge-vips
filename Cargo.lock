@@ -466,6 +466,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "iamge-vips"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "infer",
+ "libvips",
+ "reqwest",
+ "serde",
+ "tokio",
+]
+
+[[package]]
 name = "icu_collections"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -954,18 +966,6 @@ dependencies = [
  "libc",
  "untrusted",
  "windows-sys 0.52.0",
-]
-
-[[package]]
-name = "rust-vips"
-version = "0.1.0"
-dependencies = [
- "axum",
- "infer",
- "libvips",
- "reqwest",
- "serde",
- "tokio",
 ]
 
 [[package]]
